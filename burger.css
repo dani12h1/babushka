@@ -1,0 +1,50 @@
+.menu {
+  display: none;
+}
+
+@media all and (max-width: 800px) {
+  .menu_burger {
+    width: 20px;
+    height: 2px;
+    margin-bottom: 5px;
+    background-color: black;
+  }
+
+  /* .nav {
+    flex-direction: column;
+    position: relative; /*Sætter sig et stykke fra toppem */
+  /* display: block;
+  } */
+
+  .logo {
+    width: 100%;
+    padding: 3%;
+    place-self: center;
+    display: flex;
+  }
+
+  .menu {
+    display: block;
+    position: absolute; /*Sætter sig i højre side */
+    top: 20px;
+    right: 20px;
+  }
+
+  button nav {
+    display: block; /* Menupunkter sætter sig under hinanden */
+    border-bottom: 1px solid black;
+  }
+
+  button {
+    list-style: none;
+    width: 100%;
+    text-align: center;
+    padding: 0%;
+    margin: 0%;
+  }
+  /* Åbener menu med punkter under hinanden */
+  .active {
+    display: block;
+  }
+
+  

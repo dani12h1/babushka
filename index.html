@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+     <link rel="icon" type="image/x-icon" href="doll.svg">
+     <link rel="stylesheet" type="text/css" href="burger.css" />
+
+    <style>
+      main {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-gap: 1em;
+        justify-content: center;
+        margin-inline: 10rem;
+        font-family: Chalkboard SE;
+      }
+
+      article {
+        padding: 0.5em;
+        border: 1px solid black;
+        background-color: white;
+        cursor: pointer;
+        border-radius: 0.8em;;
+      }
+
+      img {
+        aspect-ratio: 16/9;
+        max-width: 100%;
+        border-radius: 0.3rem;
+      }
+
+      .valgt {
+        color: red;
+      }
+
+      nav {
+      display: flex;
+      justify-content: space-around;
+      
+      }
+
+
+      html {
+        background-color: #eee;
+      }
+
+      h1 {
+        text-align: left;
+        font-family: Chalkboard SE;
+      }
+
+      #popup {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        background-color: #000000aa;
+        justify-content: center;
+        align-items: center;
+        display: none;
+        overflow: scroll;
+        border: 1px solid black;
+      }
+
+      #popup article {
+        display: flex;
+        flex-direction: column;
+        margin: 4rem;
+        width: 60vw;
+        height: 77vh;
+        background-color: white;
+        border-radius: 0.5rem;
+        margin: 3rem;
+        padding: 1.8rem;
+        
+      }
+
+      button {
+      all: unset;
+      cursor: pointer;
+      font-family: Chalkboard SE;
+      opacity: 1;
+      
+    
+}
+     .logo {
+      
+        width: 12%;
+        height: auto;
+     }
+        
+
+      button:hover {
+      color: red;
+}
+
+.h1_menu {
+  margin-left: 10rem;
+}
+
+/* Media mobile */
+
+.menu {
+  display: none;
+}
+
+@media all and (max-width: 800px) {
+  .menu_burger {
+    width: 20px;
+    height: 2px;
+    margin-bottom: 5px;
+    background-color: black;
+  }
+
+  .logo {
+    padding: 3%;
+    display: block;
+    width: 35%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .menu {
+    display: block;
+    position: absolute; /*Sætter sig i højre side */
+    top: 20px;
+    right: 20px;
+  }
+
+  button nav {
+    display: block; /* Menupunkter sætter sig under hinanden */
+    border-bottom: 1px solid black;
+    gap: 20px;
+    
+  }
+
+  button {
+    list-style: none;
+    width: 100%;
+    text-align: center;
+    padding: 0%;
+    margin: 0%;
+    display: none;
+  }
+
+  /* Åbener menu med punkter under hinanden */
+  .active {
+    display: block;
+  }
+
+  .active button {
+    display: block;
+  }
+
+  main {
+    margin: 0;
+  }
+
+  .h1_menu {
+    margin: 0;
+  }
+
+
+}
+
+
+     
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+       <div class="logo">
+          <a href="Babushka.html"> <img src="doll5.svg" alt="logo" /></a>
+        </div>
+      
+       
+      <button data-kategorier="alle" class="valgt">Alle</button>
+      <button data-kategorier="forretter">Forretter</button>
+      <button data-kategorier="hovedretter">Hovedretter</button>
+      <button data-kategorier="desserter">Desserter</button>
+      <button data-kategorier="drikkevarer">Drikkevarer</button>
+      <button data-kategorier="sideorders">Sideorders</button>
+
+      <div class="menu" id="toggle-button">
+          <div class="menu_burger"></div>
+          <div class="menu_burger"></div>
+          <div class="menu_burger"></div>
+        </div>
+    </nav>
+
+    </header>
+    <h1 class="h1_menu">Alle</h1>
+    <main id="liste"></main>
+
+    <template>
+      <article>
+        <img src="" alt="" class="billedurl" />
+        <h2 class="navn"></h2>
+        <p class="kategori"></p>
+        <p class="oprindelsesregion"></p>
+        <p class="kortbeskrivelse"></p>
+        <p class="langbeskrivelse"></p>
+        <p class="pris"></p>
+      </article>
+    </template>
+
+    <div id="popup">
+      <article>
+        <img src="" alt=""></img>
+        <h2></h2>
+        <p></p>
+        <p></p>
+      </article>
+    </div>
+
+    <script>
+      const endpoint = "https://babushka-dd8a.restdb.io/rest/menu";
+
+      const mereinfo = {
+        headers: {
+          "x-apikey": "600ec2fb1346a1524ff12de4",
+        },
+      };
+
+      let retter;
+      let data;
+      let filter = "alle";
+
+      const header = document.querySelector("h1");
+      const filterKnapper = document.querySelectorAll("nav button");
+      filterKnapper.forEach((knap) => knap.addEventListener("click", filtrerRetter));
+      hentData;
+
+      function filtrerRetter() {
+        filter = this.dataset.kategorier;
+        document.querySelector(".valgt").classList.remove("valgt");
+        this.classList.add("valgt");
+        console.log(filter);
+        vis();
+        header.textContent = this.textContent;
+      }
+
+      async function hentData() {
+        const respons = await fetch(endpoint, mereinfo);
+        data = await respons.json();
+        vis();
+      }
+      function vis() {
+        const main = document.querySelector("main");
+        const template = document.querySelector("template").content;
+        main.textContent = "";
+        data.forEach((ret) => {
+          if (filter == ret.kategori || filter == "alle") {
+            const klon = template.cloneNode(true);
+            klon.querySelector("img").src = ret.billednavn + "-md.jpg";
+            klon.querySelector(".navn").textContent = ret.navn;
+            klon.querySelector(".kategori").textContent = ret.kategori;
+            klon.querySelector(".oprindelsesregion").textContent = ret.oprindelsesregion;
+            klon.querySelector(".kortbeskrivelse").textContent = ret.kortbeskrivelse;
+            klon.querySelector(".pris").textContent = "Pris: " + ret.pris + " kr.";
+            klon.querySelector("article").addEventListener("click", () => visDetaljer(ret));
+            main.appendChild(klon);
+          }
+        });
+      }
+
+      document.querySelector("#popup").addEventListener("click", () => (popup.style.display = "none"));
+
+      function visDetaljer(ret) {
+        console.log(ret);
+        const popup = document.querySelector("#popup");
+        popup.style.display = "flex";
+        popup.querySelector("img").src = ret.billednavn + "-md.jpg";
+        popup.querySelector("h2").textContent = ret.navn;
+        // popup.querySelector(".oprindelsesregion").textContent = ret.oprindelsesregion;
+        popup.querySelector("p").textContent = ret.langbeskrivelse;
+        popup.querySelector("p+p").textContent = "Pris: " + ret.pris + " kr.";
+        popup.addEventListener("click", () => (popup.style.display = "none"));
+      }
+      hentData();
+    </script>
+    <script src="burger.js"></script>
+  </body>
+</html>
